@@ -6,6 +6,8 @@
 
     "no-empty": false,
     "no-console": false,
-    "quotemark": false
+    "quotemark": false,
+    "interface-name": false,
+    "unified-signatures": false
   }
 }
