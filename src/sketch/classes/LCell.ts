@@ -1,6 +1,8 @@
 import CellTypes from '../enums';
 import { ColourObj, getC } from '../lib/pallete';
-
+/**
+ * Class For Individual Voronoi Cells
+ */
 export default class LCell {
   public x: number;
   public y: number;
@@ -25,6 +27,9 @@ export default class LCell {
   }
   public isNeighbour( n: LCell ) {
     return this.neighbours.includes( n );
+  }
+  get getNeighbours() {
+    return this.neighbours;
   }
   public drawBasic( p: p5 | Window ) {
     if ( p instanceof p5 ) {
