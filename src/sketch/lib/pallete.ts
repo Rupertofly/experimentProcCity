@@ -1,5 +1,11 @@
 /*tslint:disable object-literal-sort-keys */
 
+/**
+ * Contains colour information
+ *
+ * @export
+ * @interface ColourObj
+ */
 export interface ColourObj {
   red: number;
   alpha: number;
@@ -919,21 +925,21 @@ export function getC( name: string ): ColourObj;
  * @param shad shade number
  * @return colour object, get hex string with hex property
  */
-export function getC( hue: string, shad: number ): ColourObj;
+export function getC( hue: string, shad: shades ): ColourObj;
 /**
  * Get Colour frame hue number and shade number
  * @param hue hue number
  * @param shad shade number
  * @return colour object, get hex string with hex property
  */
-export function getC( hue: number, shad: number ): ColourObj;
+export function getC( hue: hues, shad: shades ): ColourObj;
 /**
  * Get Colour frame hue number and shade name
  * @param hue hue number
  * @param shad shade name
  * @return colour object, get hex string with hex property
  */
-export function getC( hue: number, shad: string ): ColourObj;
+export function getC( hue: hues, shad: string ): ColourObj;
 /**
  * Get Colour frame hue name and shade name
  * @param hue hue name
@@ -942,7 +948,7 @@ export function getC( hue: number, shad: string ): ColourObj;
  */
 export function getC( hue: string, shad: string ): ColourObj;
 
-export function getC( arg1: string | number, arg2?: string | number ): ColourObj {
+export function getC( arg1: string | hues, arg2?: string | shades ): ColourObj {
   let hue;
   let shad;
   if ( typeof arg1 === 'string' && arg2 === null ) {
