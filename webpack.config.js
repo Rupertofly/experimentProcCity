@@ -1,7 +1,7 @@
-const path = require('path')
+const path = require('path');
 
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   mode: 'none',
@@ -23,13 +23,35 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.ts']
   },
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+      minSize: 30000,
+      minChunks: 1,
+      maxAsyncRequests: 5,
+      maxInitialRequests: 3,
+      automaticNameDelimiter: '~',
+      name: true,
+      cacheGroups: {
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          priority: -10
+        },
+        default: {
+          minChunks: 2,
+          priority: -20,
+          reuseExistingChunk: true
+        }
+      }
+    }
+  },
   module: {
     rules: [
       {
         test: /\.ts(x?)$/,
         exclude: /node_modules/,
         use: [
-          {loader: 'babel-loader'},
+          { loader: 'babel-loader' },
           {
             loader: 'ts-loader'
           }
@@ -38,7 +60,7 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: [{loader: 'babel-loader'}]
+        use: [{ loader: 'babel-loader' }]
       }
     ]
   },
@@ -55,4 +77,4 @@ module.exports = {
     ])
   ],
   devtool: 'inline-source-map'
-}
+};

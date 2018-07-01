@@ -1,4 +1,9 @@
-import { polygonCentroid } from 'd3';
+// @ts-ignore
+import * as bs from 'b-spline';
+import { polygonCentroid } from 'd3-polygon';
+import * as _ from 'lodash';
+// @ts-ignore
+import * as po from 'polygon-offset';
 import CellTypes from '../enums';
 import { ColourObj, getC } from '../lib/pallete';
 /**
@@ -18,10 +23,13 @@ export default class LCell {
   public type: CellTypes;
 
   public colour: ColourObj;
+  protected clipper;
+  protected spliner;
   protected polygon: d3.VoronoiPolygon<LCell>;
   protected neighbours: LCell[];
   protected closestCity: LCell;
   protected distanceToCity: number;
+  protected clippedPoly: Array<[number, number]>;
 
   /**
    * Creates an instance of LCell.
@@ -33,6 +41,8 @@ export default class LCell {
   constructor( X: number, Y: number, TYPE: CellTypes = CellTypes.BASIC ) {
     [ this.x, this.y, this.type ] = [ X, Y, TYPE ];
     this.colour = getC( 0, 6 );
+    this.clipper = new po();
+    this.spliner = bs;
   }
 
   /**
@@ -64,6 +74,12 @@ export default class LCell {
     if ( !this.polygon ) {
       throw new Error( 'no polygon linked to this site' );
     }
+    let cpoly = this.clipper
+      .data( [ ...this.polygon, this.polygon[0] ] )
+      .padding( 6 )[0];
+    cpoly = _.range( 0, 10, 0.1 ).map( i => {
+      return this.spliner( i / 10, 3, [ ...cpoly, cpoly[1], cpoly[2] ] );
+    } );
     if ( p instanceof p5 ) {
       p.fill( this.colour.hex );
       p.beginShape();
@@ -73,8 +89,8 @@ export default class LCell {
     if ( p instanceof Window ) {
       fill( this.colour.hex );
       beginShape();
-      this.polygon.map( pt => vertex( pt[0], pt[1] ) );
-      endShape( CLOSE );
+      cpoly.map( pt => vertex( pt[0], pt[1] ) );
+      endShape();
     }
   }
   /** Runs Lloyd Smoothing on this cell */

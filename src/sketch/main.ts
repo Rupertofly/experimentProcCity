@@ -1,10 +1,8 @@
-// @ts-ignore
-import interpolate from 'b-spline';
-import { polygonCentroid, voronoi, VoronoiDiagram } from 'd3';
+import { voronoi, VoronoiDiagram } from 'd3-voronoi';
+import weightedVoronoi from 'd3-weighted-voronoi';
 import * as _ from 'lodash';
 import LCell from './classes/LCell';
 import CellTypes from './enums';
-// @ts-ignore
 // import Offset from 'polygon-offset';
 import { getC } from './lib/pallete';
 let vFunc;
@@ -30,6 +28,7 @@ export function setup() {
 }
 
 export function draw() {
+  background( 155 );
   vDiag = vFunc( sites );
   vDiag.polygons().map( pgon => {
     const cell = pgon.data;

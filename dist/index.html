@@ -15,16 +15,20 @@
         body {
             padding: 0;
             margin: 0;
+            text-align: center;
+            height: 100%;
         }
 
         canvas {
-            display: block;
+            vertical-align: middle !important;
         }
     </style>
 </head>
 
 <body>
-
+    <div class="container-fluid p-0">
+        <div style="height: 100%;" class="row justify-content-center align-items-center" id="canvas"></div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>
@@ -32,6 +36,16 @@
         crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
-<script type="text/javascript" src="bundle.f65d2d67da69b59852b7.js"></script></body>
+    <script lang="text/javascript">
+        function resize() {
+            var heights = window.innerHeight;
+            document.getElementById("canvas").style.height = heights + "px";
+        }
+        resize();
+        window.onresize = function () {
+            resize();
+        };
+    </script>
+<script type="text/javascript" src="vendors~bundle.64bc20728c4038ed9de7.js"></script><script type="text/javascript" src="bundle.f61af64b730c3f66b951.js"></script></body>
 
 </html>

@@ -8,6 +8,7 @@
     "no-console": false,
     "quotemark": false,
     "interface-name": false,
-    "unified-signatures": false
+    "unified-signatures": false,
+    "no-bitwise": false
   }
 }

@@ -1,5 +1,7 @@
 /* eslint no-unused-vars: 0 */
-import { polygonCentroid, range } from 'd3';
+// import CCapture from 'ccapture.js';
+import { range } from 'd3-array';
+import { polygonCentroid } from 'd3-polygon';
 if ( !Object.entries ) {
   /* tslint:ignore */
   Object.entries = obj => {
@@ -56,30 +58,30 @@ export let lastFrame = 180;
  * Adds A frame to the recording and saves if at end
  *
  */
-export function recordFrame() {
-  if ( frameCount <= lastFrame ) {
-    recorder.capture( canvasObject );
-    if ( frameCount === lastFrame ) {
-      recorder.stop();
-      recorder.save();
-    }
-  }
-}
-/**
- * Set's up Recording
- *
- */
-export function recordSetup() {
-  recorder = new CCapture( {
-    format: 'webm',
-    framerate: 30,
-    verbose: true
-  } );
-  console.log( 'beginning record' );
+// export function recordFrame() {
+//   if ( frameCount <= lastFrame ) {
+//     recorder.capture( canvasObject );
+//     if ( frameCount === lastFrame ) {
+//       recorder.stop();
+//       recorder.save();
+//     }
+//   }
+// }
+// /**
+//  * Set's up Recording
+//  *
+//  */
+// export function recordSetup() {
+//   recorder = new CCapture( {
+//     format: 'webm',
+//     framerate: 30,
+//     verbose: true
+//   } );
+//   console.log( 'beginning record' );
 
-  canvasObject = document.getElementById( 'defaultCanvas0' );
-  recorder.start();
-}
+//   canvasObject = document.getElementById( 'defaultCanvas0' );
+//   recorder.start();
+// }
 function sqr( x ) {
   return x * x;
 }
