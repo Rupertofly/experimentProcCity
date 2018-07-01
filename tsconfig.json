@@ -2,9 +2,10 @@
   "compilerOptions": {
     "target": "es2017",
     "outDir": "./dist/",
-    "module": "es6",
     "sourceMap": true,
-    "allowJs": false
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "module": "esnext"
   },
   "include": [
     "node_modules/@types/**/*",

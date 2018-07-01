@@ -7,3 +7,11 @@ declare module 'ccapture.js' {
 
 declare const fBufffer: p5.Graphics;
 declare const bBufffer: p5.Graphics;
+
+declare module 'polygon-offset' {
+  export default function Offset(): OffsetObj;
+  export interface OffsetObj {
+    data( sites: any[] ): this;
+    padding( dist: number ): any[][];
+  }
+}

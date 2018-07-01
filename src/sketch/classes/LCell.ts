@@ -2,8 +2,7 @@
 import * as bs from 'b-spline';
 import { polygonCentroid } from 'd3-polygon';
 import * as _ from 'lodash';
-// @ts-ignore
-import * as po from 'polygon-offset';
+import Offset, { OffsetObj } from 'polygon-offset';
 import CellTypes from '../enums';
 import { ColourObj, getC } from '../lib/pallete';
 /**
@@ -23,7 +22,7 @@ export default class LCell {
   public type: CellTypes;
 
   public colour: ColourObj;
-  protected clipper;
+  protected clipper: OffsetObj;
   protected spliner;
   protected polygon: d3.VoronoiPolygon<LCell>;
   protected neighbours: LCell[];
@@ -41,7 +40,8 @@ export default class LCell {
   constructor( X: number, Y: number, TYPE: CellTypes = CellTypes.BASIC ) {
     [ this.x, this.y, this.type ] = [ X, Y, TYPE ];
     this.colour = getC( 0, 6 );
-    this.clipper = new po();
+    // @ts-ignore
+    this.clipper = new Offset();
     this.spliner = bs;
   }
 
