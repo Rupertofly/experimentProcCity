@@ -30,7 +30,6 @@ export function setup() {
 }
 
 export function draw() {
-  background( 155 );
   vDiag = vFunc( sites );
   vDiag.polygons().map( pgon => {
     const cell = pgon.data;
