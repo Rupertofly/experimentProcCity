@@ -9,9 +9,9 @@ let vFunc;
 let vDiag: VoronoiDiagram<LCell>;
 const sites = [];
 let framesSinceSitesChanged = 1000;
-
+let c: p5.Renderer;
 export function setup() {
-  const c = createCanvas( 300, 300 );
+  c = createCanvas( 300, 300 );
   c.parent( '#canvas' );
   background( 55 );
   vFunc = voronoi<LCell>()
@@ -33,13 +33,30 @@ export function draw() {
   vDiag.polygons().map( pgon => {
     const cell = pgon.data;
     cell.setPolygon = pgon;
-    strokeWeight( 2 + Math.sin( frameCount / 100 ) );
+    strokeWeight( 1 + Math.sin( frameCount / 100 ) );
+    drawingContext.filter = 'blur(0.5px)';
     cell.drawBasic( window );
     if ( framesSinceSitesChanged < 12 ) {
       cell.smooth();
     }
   } );
   framesSinceSitesChanged++;
+  drawingContext.filter = 'none';
+  const x = drawingContext.getImageData( 0, 0, width, height );
+  ellipse( 30, 30, 50, 50 );
+  drawingContext.filter = 'blur(12px)';
+  const y = createImageBitmap( x ).then( b => drawingContext.drawImage( b, 0, 0 ) );
+
+  fill( 0 );
+  textFont( 'Nunito', 500 );
+  textStyle( '700' );
+  textSize( 50 );
+  text( 'Ruby Quail', 50, 50 );
+
+  textFont( 'Nunito' );
+  textSize( 50 );
+  drawingContext.font = '700 30px quicksand';
+  text( 'Ruby Quail', 50, 100 );
 }
 
 export function mousePressed() {

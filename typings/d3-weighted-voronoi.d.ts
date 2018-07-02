@@ -1,28 +1,28 @@
 /* tslint:disable max-classes-per-file */
 declare module 'd3-weighted-voronoi' {
-  interface WVpoly extends Array<[number, number]> {
-    site: Vertex;
+  export interface WVpoly<T> extends Array<[number, number]> {
+    site: Vertex<T>;
   }
-  interface Vertex {
+  export interface Vertex<T> {
     x: number;
     y: number;
     weight: number;
     index: number;
     conflicts: {};
-    neighbours: Vertex[];
-    polygon: WVpoly;
-    originalObject: {};
+    neighbours: Array<Vertex<T>>;
+    polygon: WVpoly<T>;
+    originalObject: T;
   }
-  interface WeightedVoronoi {
-    ( sites: any[] ): WVpoly[];
-    x(): ( d: any ) => number;
-    x( x: ( d: any ) => number ): this;
-    y(): ( d: any ) => number;
-    y( y: ( d: any ) => number ): this;
+  export interface WeightedVoronoi<T> {
+    ( sites: T[] ): Array<WVpoly<T>>;
+    x(): ( d: T ) => number;
+    x( x: ( d: T ) => number ): this;
+    y(): ( d: T ) => number;
+    y( y: ( d: T ) => number ): this;
     size(): [number, number] | null;
     size( size: [number, number] ): this;
-    weights(): ( d: any ) => number;
-    weights( weights: ( d: any ) => number ): this;
+    weights(): ( d: T ) => number;
+    weights( weights: ( d: T ) => number ): this;
   }
-  export default function weightedVoronoi(): WeightedVoronoi;
+  export function weightedVoronoi<T>(): WeightedVoronoi<T>;
 }
