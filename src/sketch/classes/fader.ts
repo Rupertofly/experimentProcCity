@@ -5,6 +5,16 @@ export default class Fader {
   public fadeIn = ( object: {}, key: string, time: number ) => {
     this.faders.push( new FadeObject( object, key, time, true ) );
   };
+  public fadeOut = ( object: {}, key: string, time: number ) => {
+    this.faders.push( new FadeObject( object, key, time, false ) );
+  };
+  public update = () => {
+    this.faders.map( ( val, ind, arr ) => {
+      if ( val.update() ) {
+        arr.splice( ind, 1 );
+      }
+    } );
+  };
 }
 
 class FadeObject {
@@ -31,5 +41,6 @@ class FadeObject {
     } else {
       this.editObj[key] -= this.rate;
     }
+    return this.currentTime === this.time ? true : false;
   }
 }
