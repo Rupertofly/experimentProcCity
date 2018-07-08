@@ -18,3 +18,6 @@ declare module 'polygon-offset' {
     padding( dist: number ): any[][];
   }
 }
+declare interface Window extends p5 {
+  qw: () => void;
+}

@@ -2,6 +2,9 @@
 import * as _ from 'lodash';
 export default class Fader {
   protected faders: FadeObject[];
+  constructor() {
+    this.faders = [];
+  }
   public fadeIn = ( object: {}, key: string, time: number ) => {
     this.faders.push( new FadeObject( object, key, time, true ) );
   };

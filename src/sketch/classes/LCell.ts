@@ -1,10 +1,12 @@
 // @ts-ignore
-import * as bs from 'b-spline';
+import bs from 'b-spline';
 import { polygonCentroid } from 'd3-polygon';
 import * as _ from 'lodash';
 import Offset, { OffsetObj } from 'polygon-offset';
 import CellTypes from '../enums';
+import { toCol } from '../lib/helperFuncs';
 import { ColourObj, getC } from '../lib/pallete';
+import Fader from './fader';
 /**
  * Class For Individual Voronoi Cells
  * @author Rupert
@@ -16,14 +18,15 @@ export default class LCell {
 
   /** Index in voronoi array */
   public index: number;
+  public width: number;
 
   public centroid: [number, number];
 
   public type: CellTypes;
 
   public colour: ColourObj;
+  public opacity: number;
   protected clipper: OffsetObj;
-  protected spliner;
   protected polygon: d3.VoronoiPolygon<LCell>;
   protected neighbours: LCell[];
   protected closestCity: LCell;
@@ -38,11 +41,13 @@ export default class LCell {
    * @memberof LCell
    */
   constructor( X: number, Y: number, TYPE: CellTypes = CellTypes.BASIC ) {
-    [ this.x, this.y, this.type ] = [ X, Y, TYPE ];
+    [this.x, this.y, this.type] = [X, Y, TYPE];
     this.colour = getC( 0, 6 );
     // @ts-ignore
     this.clipper = new Offset();
-    this.spliner = bs;
+    this.width = 30;
+    const pg = bs( 0.2, 1, [[0, 0], [1, 1], [2, 1]] );
+    console.log( pg );
   }
 
   /**
@@ -52,7 +57,7 @@ export default class LCell {
    * @memberof LCell
    */
   public posFromTuple( pos: [number, number] ) {
-    [ this.x, this.y ] = pos;
+    [this.x, this.y] = pos;
   }
 
   public addNeighbour( n: LCell ) {
@@ -70,29 +75,14 @@ export default class LCell {
     this.polygon = poly;
   }
 
-  public drawBasic( p: p5 | Window ) {
-    if ( !this.polygon ) {
-      throw new Error( 'no polygon linked to this site' );
-    }
-    let cpoly = this.clipper
-      .data( [ ...this.polygon, this.polygon[0] ] )
-      .padding( 6 )[0];
-    cpoly = _.range( 0, 10, 0.1 ).map( i => {
-      return this.spliner( i / 10, 3, [ ...cpoly, cpoly[1], cpoly[2] ] );
-    } );
-    if ( p instanceof p5 ) {
-      p.fill( this.colour.hex );
-      p.beginShape();
-      this.polygon.map( pt => p.vertex( pt[0], pt[1] ) );
-      p.endShape( CLOSE );
-    }
-    if ( p instanceof Window ) {
-      fill( this.colour.hex );
-      beginShape();
-      cpoly.map( pt => vertex( pt[0], pt[1] ) );
-      endShape();
-    }
+  public drawSimple( drawSurface: p5 | Window = window ) {
+    const ds = drawSurface;
+    const v = new LCell( 32, 32, 0 );
+    ds.fill( toCol( this.colour, this.opacity ) );
+
+    const f = new Fader();
   }
+
   /** Runs Lloyd Smoothing on this cell */
   public smooth() {
     if ( !this.polygon ) {

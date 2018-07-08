@@ -2,7 +2,7 @@
   "extends": ["tslint:latest", "tslint-config-prettier", "tslint-eslint-rules"],
   "rules": {
     "space-within-parens": [true, 1],
-    "array-bracket-spacing": [true, "always"],
+    //"array-bracket-spacing": [true, "always"],
 
     "no-empty": false,
     "no-console": false,

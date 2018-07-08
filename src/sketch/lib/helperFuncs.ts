@@ -2,6 +2,8 @@
 // import CCapture from 'ccapture.js';
 import { range } from 'd3-array';
 import { polygonCentroid } from 'd3-polygon';
+import { colourObj } from '../pallete';
+import { ColourObj, getC } from './pallete';
 if ( !Object.entries ) {
   /* tslint:ignore */
   Object.entries = obj => {
@@ -51,6 +53,12 @@ export function checkNested( obj /*, level1, level2, ... levelN */ ) {
 export let recorder;
 export let canvasObject;
 export let lastFrame = 180;
+
+export let toCol = ( c: colourObj, alpha = 255 ) => {
+  const col = color( c.hex );
+  col.setAlpha( alpha );
+  return col;
+};
 
 // For Recording
 

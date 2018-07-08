@@ -1,5 +1,5 @@
 declare module 'b-spline' {
-  export default function interpolate(
+  export default function(
     t: number,
     degree: number,
     points: any[],

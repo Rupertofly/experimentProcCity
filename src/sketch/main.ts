@@ -1,6 +1,7 @@
 import { voronoi, VoronoiDiagram } from 'd3-voronoi';
 import weightedVoronoi from 'd3-weighted-voronoi';
 import * as _ from 'lodash';
+import Fader from './classes/fader';
 import LCell from './classes/LCell';
 import CellTypes from './enums';
 // import Offset from 'polygon-offset';
@@ -17,10 +18,7 @@ export function setup() {
 
   c.parent( '#canvas' );
   background( getC( 2, 5 ).hex );
-}
-
-export function draw() {
-  background( getC( 1, 6 ).hex );
+  const v = new LCell( 32, 32, 0 );
 }
 
 export function mousePressed() {}
