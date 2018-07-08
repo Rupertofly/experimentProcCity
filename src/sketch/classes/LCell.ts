@@ -1,6 +1,7 @@
 // @ts-ignore
 import bs from 'b-spline';
 import { polygonCentroid } from 'd3-polygon';
+import { WVpoly } from 'd3-weighted-voronoi';
 import * as _ from 'lodash';
 import Offset, { OffsetObj } from 'polygon-offset';
 import CellTypes from '../enums';
@@ -18,7 +19,7 @@ export default class LCell {
 
   /** Index in voronoi array */
   public index: number;
-  public width: number;
+  public weight: number;
 
   public centroid: [number, number];
 
@@ -27,7 +28,7 @@ export default class LCell {
   public colour: ColourObj;
   public opacity: number;
   protected clipper: OffsetObj;
-  protected polygon: d3.VoronoiPolygon<LCell>;
+  protected polygon: WVpoly<LCell>;
   protected neighbours: LCell[];
   protected closestCity: LCell;
   protected distanceToCity: number;
@@ -42,12 +43,10 @@ export default class LCell {
    */
   constructor( X: number, Y: number, TYPE: CellTypes = CellTypes.BASIC ) {
     [this.x, this.y, this.type] = [X, Y, TYPE];
-    this.colour = getC( 0, 6 );
+    this.colour = getC( floor( 3 + random( 4 ) ), floor( 2 + random( 4 ) ) );
     // @ts-ignore
     this.clipper = new Offset();
-    this.width = 30;
-    const pg = bs( 0.2, 1, [[0, 0], [1, 1], [2, 1]] );
-    console.log( pg );
+    this.weight = 30;
   }
 
   /**
@@ -68,21 +67,31 @@ export default class LCell {
     return this.neighbours.includes( n );
   }
 
-  get getNeighbours() {
+  public getNeighbours() {
     return this.neighbours;
   }
-  set setPolygon( poly: d3.VoronoiPolygon<LCell> ) {
+  public setPolygon( poly: WVpoly<LCell> ) {
     this.polygon = poly;
   }
 
   public drawSimple( drawSurface: p5 | Window = window ) {
     const ds = drawSurface;
-    const v = new LCell( 32, 32, 0 );
     ds.fill( toCol( this.colour, this.opacity ) );
-
+    ds.noStroke();
+    ds.beginShape();
+    this.polygon.map( v => ds.vertex( v[0], v[1] ) );
+    ds.endShape();
     const f = new Fader();
   }
-
+  public drawWeight( drawSurface: p5 | Window = window ) {
+    const ds = drawSurface;
+    ds.push();
+    ds.translate( this.x, this.y );
+    ds.noFill();
+    ds.stroke( 0, 255, 255 );
+    ds.ellipse( 0, 0, this.weight, this.weight );
+    ds.pop();
+  }
   /** Runs Lloyd Smoothing on this cell */
   public smooth() {
     if ( !this.polygon ) {

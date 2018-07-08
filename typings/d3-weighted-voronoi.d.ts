@@ -21,8 +21,8 @@ declare module 'd3-weighted-voronoi' {
     y( y: ( d: T ) => number ): this;
     size(): [number, number] | null;
     size( size: [number, number] ): this;
-    weights(): ( d: T ) => number;
-    weights( weights: ( d: T ) => number ): this;
+    weight(): ( d: T ) => number;
+    weight( weights: ( d: T ) => number ): this;
   }
   export function weightedVoronoi<T>(): WeightedVoronoi<T>;
 }

@@ -14,7 +14,7 @@ export default class VorManager {
     this.width = width;
     this.height = height;
     const space = spacing || 30;
-    const dis = _.min( [ width, height ] );
+    const dis = _.min( [width, height] );
     const v = dis / space;
     this.siteCount = _.floor( Math.pow( v, 2 ) );
     this.sites = _.range( this.siteCount ).map( () => {
@@ -26,8 +26,9 @@ export default class VorManager {
       .weightedVoronoi<LCell>()
       .x( c => c.x )
       .y( c => c.y )
-      .weights( c => ( c.type ? 100 : 1 ) )
-      .size( [ this.width, this.height ] );
+      .weight( c => c.weight )
+      .size( [this.width, this.height] );
     this.vDiagram = this.vLayout( this.sites );
+    this.vDiagram.map( poly => poly.site.originalObject.setPolygon( poly ) );
   }
 }
