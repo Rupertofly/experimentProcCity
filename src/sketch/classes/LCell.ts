@@ -3,7 +3,7 @@ import bs from 'b-spline';
 import { polygonCentroid } from 'd3-polygon';
 import { WVpoly } from 'd3-weighted-voronoi';
 import * as _ from 'lodash';
-import Offset, { OffsetObj } from 'polygon-offset';
+import Offset from 'polygon-offset';
 import CellTypes from '../enums';
 import { toCol } from '../lib/helperFuncs';
 import { ColourObj, getC } from '../lib/pallete';
@@ -27,7 +27,7 @@ export default class LCell {
 
   public colour: ColourObj;
   public opacity: number;
-  protected clipper: OffsetObj;
+  protected clipper: Offset;
   protected polygon: WVpoly<LCell>;
   protected neighbours: LCell[];
   protected closestCity: LCell;
@@ -46,7 +46,7 @@ export default class LCell {
     this.colour = getC( floor( 3 + random( 4 ) ), floor( 2 + random( 4 ) ) );
     // @ts-ignore
     this.clipper = new Offset();
-    this.weight = 3;
+    this.weight = 1;
   }
 
   /**
@@ -89,8 +89,51 @@ export default class LCell {
     ds.translate( this.x, this.y );
     ds.noFill();
     ds.stroke( 0, 255, 255 );
-    ds.ellipse( 0, 0, this.weight, this.weight );
+    ds.ellipse( 0, 0, this.weight + 10, this.weight + 10 );
     ds.pop();
+  }
+
+  public drawPadded(
+    ds: p5 | Window = window,
+    padding: number = 5,
+    draw: boolean = true
+  ) {
+    const padded = new Offset( [...this.polygon, this.polygon[0]], 5 ).padding(
+      padding
+    );
+    const pd = padded[0] || [];
+    if ( !draw ) {
+      pd.splice( pd.length - 1, 1 );
+      return pd;
+    }
+    ds.push();
+    ds.noFill();
+    ds.stroke( 255 );
+    ds.strokeWeight( 2 );
+    ds.beginShape();
+    pd.map( p => ds.vertex( p[0], p[1] ) );
+    ds.endShape( CLOSE );
+    ds.pop();
+    return pd;
+  }
+  public drawRound( ds: p5 | Window = window, poly?: Array<[number, number]> ) {
+    const pol = poly || this.polygon;
+    ds.fill( toCol( this.colour, 255 ) );
+    ds.stroke( 230 );
+    ds.strokeWeight( 1.5 );
+    ds.beginShape();
+    for ( let t = 0; t <= 1; t += 1 / 50 ) {
+      const p = bs( t, pol.length - 2, [
+        ...pol,
+        ...pol.slice( 0, pol.length - 2 )
+      ] );
+      vertex( p[0], p[1] );
+    }
+    ds.endShape( CLOSE );
+  }
+  public drawPaddedRound( ds: p5 | Window = window ) {
+    const c = this.drawPadded( ds, 5, false );
+    this.drawRound( ds, c );
   }
   /** Runs Lloyd Smoothing on this cell */
   public smooth() {

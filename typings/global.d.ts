@@ -1,3 +1,5 @@
+// tslint:disable max-classes-per-file
+
 declare module 'ccapture.js' {
   export default class CCapture {
     constructor( {} );
@@ -12,10 +14,12 @@ declare interface CanvasRenderingContext2D {
   filter: string;
 }
 declare module 'polygon-offset' {
-  export default function Offset(): OffsetObj;
-  export interface OffsetObj {
-    data( sites: any[] ): this;
-    padding( dist: number ): any[][];
+  export default class Offset {
+    constructor( vert?: any[], arc?: number );
+
+    public data( sites: any[] ): this;
+    public padding( dist: number ): any[][];
+    public offsetLine( dist: number ): any[][];
   }
 }
 declare interface Window extends p5 {

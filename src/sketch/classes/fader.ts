@@ -5,11 +5,11 @@ export default class Fader {
   constructor() {
     this.faders = [];
   }
-  public fadeIn = ( object: {}, key: string, time: number ) => {
-    this.faders.push( new FadeObject( object, key, time, true ) );
+  public fadeIn = ( object: {}, key: string, time: number, end: number ) => {
+    this.faders.push( new FadeObject( object, key, time, true, end ) );
   };
-  public fadeOut = ( object: {}, key: string, time: number ) => {
-    this.faders.push( new FadeObject( object, key, time, false ) );
+  public fadeOut = ( object: {}, key: string, time: number, end: number ) => {
+    this.faders.push( new FadeObject( object, key, time, false, end ) );
   };
   public update = () => {
     this.faders.map( ( val, ind, arr ) => {
@@ -28,21 +28,27 @@ class FadeObject {
   private inc: boolean;
   private rate: number;
 
-  constructor( object: {}, key: string, time: number, increasing: boolean ) {
+  constructor(
+    object: {},
+    key: string,
+    time: number,
+    increasing: boolean = false,
+    end: number = 255
+  ) {
     this.time = time;
     this.currentTime = 0;
     this.editObj = object;
     this.key = key;
     this.inc = increasing;
-    this.editObj[key] = this.inc ? 0 : 255;
-    this.rate = 255 / time;
+    this.editObj[key] = this.inc ? 0 : end;
+    this.rate = end / time;
   }
   public update() {
     this.currentTime++;
     if ( this.inc ) {
-      this.editObj[key] += this.rate;
+      this.editObj[this.key] += this.rate;
     } else {
-      this.editObj[key] -= this.rate;
+      this.editObj[this.key] -= this.rate;
     }
     return this.currentTime > this.time ? true : false;
   }

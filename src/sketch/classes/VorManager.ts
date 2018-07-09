@@ -26,7 +26,7 @@ export default class VorManager {
       .weightedVoronoi<LCell>()
       .x( c => c.x )
       .y( c => c.y )
-      .weight( c => ( c.weight * c.weight ) / 2 )
+      .weight( c => 30 * c.weight )
       .size( [this.width, this.height] );
     this.vDiagram = this.vLayout( this.sites );
     this.vDiagram.map( poly => poly.site.originalObject.setPolygon( poly ) );
