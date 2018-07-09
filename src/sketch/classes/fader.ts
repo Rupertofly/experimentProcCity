@@ -44,6 +44,6 @@ class FadeObject {
     } else {
       this.editObj[key] -= this.rate;
     }
-    return this.currentTime === this.time ? true : false;
+    return this.currentTime > this.time ? true : false;
   }
 }

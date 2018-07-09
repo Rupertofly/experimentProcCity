@@ -46,7 +46,7 @@ export default class LCell {
     this.colour = getC( floor( 3 + random( 4 ) ), floor( 2 + random( 4 ) ) );
     // @ts-ignore
     this.clipper = new Offset();
-    this.weight = 30;
+    this.weight = 3;
   }
 
   /**
