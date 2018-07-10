@@ -12,6 +12,7 @@ const framesSinceSitesChanged = 1000;
 let c: p5.Renderer;
 let voronoi: VM;
 let F: Fader;
+let selectedCell: LCell;
 export function setup() {
   c = createCanvas( 500, 500 );
 
@@ -26,24 +27,31 @@ export function setup() {
   F = new Fader();
 }
 export function draw() {
-  background( 55 );
-  F.update();
+  background( 55, 255 );
+
   select( '#fr' ).html( frCalc().toPrecision( 3 ) );
 
-  if ( !( frameCount % 10 ) ) {
-    voronoi.sites.map( s => {
+  voronoi.sites.map( s => {
+    if ( !( frameCount % 10 ) ) {
       s.smooth();
-    } );
+    }
+    if ( !F.isAnimating( s ) ) {
+      s.opacity = 100;
+    }
+  } );
+
+  F.update();
+  const mCell = voronoi.getCell( mouseX, mouseY );
+  if ( mCell !== selectedCell ) {
+    F.fadeIn( mCell, 'opacity', 60, 255, 100 );
   }
+  selectedCell = mCell;
   if ( !( frameCount % 3 ) ) {
     voronoi.redrawSimple();
     voronoi.updateD();
   }
   image( voronoi.graphicsBuffer, 0, 0 );
   const mSite = voronoi.sites[voronoi.sites.length - 5];
-  mSite.x = mouseX < 0 ? 0 : mouseX > width ? width : mouseX;
-
-  mSite.y = mouseY < 0 ? 0 : mouseY > height ? height : mouseY;
   mSite.weight = 1;
 }
 

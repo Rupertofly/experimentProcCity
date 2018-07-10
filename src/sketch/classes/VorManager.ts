@@ -31,8 +31,13 @@ export default class VorManager {
       .y( c => c.y )
       .weight( c => 30 * c.weight )
       .size( [this.width, this.height] );
+    this.quadtree = quadtree<LCell>()
+      .x( c => c.x )
+      .y( c => c.y )
+      .extent( [[0, 0], [this.width, this.height]] );
     this.vDiagram = this.vLayout( this.sites );
     this.vDiagram.map( poly => poly.site.originalObject.setPolygon( poly ) );
+    this.quadtree.addAll( this.sites );
   }
   public updateD() {
     this.vDiagram = this.vLayout( this.sites );
@@ -47,6 +52,11 @@ export default class VorManager {
     if ( !this.graphicsBuffer ) {
       this.createGraphic();
     }
+    // @ts-ignore
+    this.graphicsBuffer.clear();
     this.sites.map( s => s.drawSimple( this.graphicsBuffer as any ) );
+  }
+  public getCell( x: number, y: number ) {
+    return this.quadtree.find( x, y );
   }
 }
