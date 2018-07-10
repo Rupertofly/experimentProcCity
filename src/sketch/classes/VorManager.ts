@@ -1,3 +1,4 @@
+import { quadtree } from 'd3';
 import * as wv from 'd3-weighted-voronoi';
 import * as _ from 'lodash';
 import CellTypes from '../enums';
@@ -7,8 +8,10 @@ export default class VorManager {
   public vDiagram: Array<wv.WVpoly<LCell>>;
   public siteCount: number;
   public sites: LCell[];
+  public graphicsBuffer: p5.Graphics;
   private width: number;
   private height: number;
+  private quadtree: d3.Quadtree<LCell>;
 
   constructor( width: number, height: number, spacing?: number ) {
     this.width = width;
@@ -34,5 +37,16 @@ export default class VorManager {
   public updateD() {
     this.vDiagram = this.vLayout( this.sites );
     this.vDiagram.map( poly => poly.site.originalObject.setPolygon( poly ) );
+  }
+  public createGraphic() {
+    this.graphicsBuffer = createGraphics( this.width, this.height );
+    // @ts-ignore
+    return this.graphicsBuffer;
+  }
+  public redrawSimple() {
+    if ( !this.graphicsBuffer ) {
+      this.createGraphic();
+    }
+    this.sites.map( s => s.drawSimple( this.graphicsBuffer as any ) );
   }
 }
