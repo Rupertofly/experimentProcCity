@@ -2,6 +2,7 @@ import { quadtree } from 'd3';
 import * as wv from 'd3-weighted-voronoi';
 import * as _ from 'lodash';
 import CellTypes from '../enums';
+import Queue from '../lib/priority-queue';
 import LCell from './LCell';
 export default class VorManager {
   public vLayout: wv.WeightedVoronoi<LCell>;
@@ -58,5 +59,37 @@ export default class VorManager {
   }
   public getCell( x: number, y: number ) {
     return this.quadtree.find( x, y );
+  }
+  public getPath( start: LCell, end: LCell ) {
+    const heuristic = ( a: LCell, b: LCell ) => {
+      return abs( a.x - b.x ) + abs( a.y - b.y );
+    };
+    const frontier = new Queue<LCell>();
+    frontier.enqueue( start, 0 );
+    const cameFrom = {};
+    const costSoFar = {};
+    cameFrom[start.index] = null;
+    costSoFar[start.index] = 0;
+    while ( !frontier.isEmpty() ) {
+      const current = frontier.dequeue().element;
+      if ( current === end ) break;
+      for ( const next of current.getNeighbours() ) {
+        const newCost = ( costSoFar[current.index] || 0 ) + 1;
+        if (
+          costSoFar[next.index] === undefined ||
+          newCost < costSoFar[next.index]
+        ) {
+          costSoFar[next.index] = newCost;
+          const priority = heuristic( end, next );
+          frontier.enqueue( next, priority );
+          cameFrom[next.index] = current;
+        }
+      }
+    }
+    return cameFrom;
+  }
+
+  public updateNeighbours() {
+    this.sites.map( site => site.updateNeighbours() );
   }
 }

@@ -41,12 +41,13 @@ export default class LCell {
    * @param {CellTypes} [TYPE=CellTypes.BASIC] Type to use for cell
    * @memberof LCell
    */
-  constructor(X: number, Y: number, TYPE: CellTypes = CellTypes.BASIC) {
+  constructor( X: number, Y: number, TYPE: CellTypes = CellTypes.BASIC ) {
     [this.x, this.y, this.type] = [X, Y, TYPE];
-    this.colour = getC(floor(3 + random(4)), floor(2 + random(4)));
+    this.colour = getC( floor( 3 + random( 4 ) ), floor( 2 + random( 4 ) ) );
     // @ts-ignore
     this.clipper = new Offset();
     this.weight = 1;
+    this.neighbours = new Array<LCell>();
   }
 
   /**
@@ -55,41 +56,47 @@ export default class LCell {
    * @param {[number, number]} pos length 2 array to use for position
    * @memberof LCell
    */
-  public posFromTuple(pos: [number, number]) {
+  public posFromTuple( pos: [number, number] ) {
     [this.x, this.y] = pos;
   }
 
-  public addNeighbour(n: LCell) {
-    this.neighbours.push(n);
+  public addNeighbour( n: LCell ) {
+    this.neighbours.push( n );
   }
 
-  public isNeighbour(n: LCell) {
-    return this.neighbours.includes(n);
+  public isNeighbour( n: LCell ) {
+    return this.neighbours.includes( n );
   }
 
   public getNeighbours() {
     return this.neighbours;
   }
-  public setPolygon(poly: WVpoly<LCell>) {
+  public updateNeighbours() {
+    if ( !this.polygon ) return;
+    this.neighbours = this.polygon.site.neighbours.map(
+      site => site.originalObject
+    );
+  }
+  public setPolygon( poly: WVpoly<LCell> ) {
     this.polygon = poly;
   }
 
-  public drawSimple(drawSurface: p5 | Window = window) {
+  public drawSimple( drawSurface: p5 | Window = window ) {
     const ds = drawSurface;
-    ds.fill(toCol(this.colour, this.opacity));
+    ds.fill( toCol( this.colour, this.opacity ) );
     ds.noStroke();
     ds.beginShape();
-    this.polygon.map(v => ds.vertex(v[0], v[1]));
+    this.polygon.map( v => ds.vertex( v[0], v[1] ) );
     ds.endShape();
     const f = new Fader();
   }
-  public drawWeight(drawSurface: p5 | Window = window) {
+  public drawWeight( drawSurface: p5 | Window = window ) {
     const ds = drawSurface;
     ds.push();
-    ds.translate(this.x, this.y);
+    ds.translate( this.x, this.y );
     ds.noFill();
-    ds.stroke(0, 255, 255);
-    ds.ellipse(0, 0, this.weight + 10, this.weight + 10);
+    ds.stroke( 0, 255, 255 );
+    ds.ellipse( 0, 0, this.weight + 10, this.weight + 10 );
     ds.pop();
   }
 
@@ -98,49 +105,49 @@ export default class LCell {
     padding: number = 5,
     draw: boolean = true
   ) {
-    const padded = new Offset([...this.polygon, this.polygon[0]], 5).padding(
+    const padded = new Offset( [...this.polygon, this.polygon[0]], 5 ).padding(
       padding
     );
     const pd = padded[0] || [];
-    if (!draw) {
-      pd.splice(pd.length - 1, 1);
+    if ( !draw ) {
+      pd.splice( pd.length - 1, 1 );
       return pd;
     }
     ds.push();
     ds.noFill();
-    ds.stroke(255);
-    ds.strokeWeight(2);
+    ds.stroke( 255 );
+    ds.strokeWeight( 2 );
     ds.beginShape();
-    pd.map(p => ds.vertex(p[0], p[1]));
-    ds.endShape(CLOSE);
+    pd.map( p => ds.vertex( p[0], p[1] ) );
+    ds.endShape( CLOSE );
     ds.pop();
     return pd;
   }
-  public drawRound(ds: p5 | Window = window, poly?: Array<[number, number]>) {
+  public drawRound( ds: p5 | Window = window, poly?: Array<[number, number]> ) {
     const pol = poly || this.polygon;
-    ds.fill(toCol(this.colour, 255));
-    ds.stroke(230);
-    ds.strokeWeight(1.5);
+    ds.fill( toCol( this.colour, 255 ) );
+    ds.stroke( 230 );
+    ds.strokeWeight( 1.5 );
     ds.beginShape();
-    for (let t = 0; t <= 1; t += 1 / 50) {
-      const p = bs(t, pol.length - 2, [
+    for ( let t = 0; t <= 1; t += 1 / 50 ) {
+      const p = bs( t, pol.length - 2, [
         ...pol,
-        ...pol.slice(0, pol.length - 2)
-      ]);
-      vertex(p[0], p[1]);
+        ...pol.slice( 0, pol.length - 2 )
+      ] );
+      vertex( p[0], p[1] );
     }
-    ds.endShape(CLOSE);
+    ds.endShape( CLOSE );
   }
-  public drawPaddedRound(ds: p5 | Window = window) {
-    const c = this.drawPadded(ds, 5, false);
-    this.drawRound(ds, c);
+  public drawPaddedRound( ds: p5 | Window = window ) {
+    const c = this.drawPadded( ds, 5, false );
+    this.drawRound( ds, c );
   }
   /** Runs Lloyd Smoothing on this cell */
   public smooth() {
-    if (!this.polygon) {
-      throw new Error('no polygon found');
+    if ( !this.polygon ) {
+      throw new Error( 'no polygon found' );
     }
-    this.centroid = polygonCentroid(this.polygon);
-    this.posFromTuple(this.centroid);
+    this.centroid = polygonCentroid( this.polygon );
+    this.posFromTuple( this.centroid );
   }
 }

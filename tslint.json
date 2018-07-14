@@ -9,6 +9,8 @@
     "quotemark": false,
     "interface-name": false,
     "unified-signatures": false,
-    "no-bitwise": false
+    "no-bitwise": false,
+    "curly": [true, "ignore-same-line"],
+    "max-classes-per-file": false
   }
 }

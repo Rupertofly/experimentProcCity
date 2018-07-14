@@ -49,6 +49,7 @@ export function draw() {
   if ( !( frameCount % 3 ) ) {
     voronoi.redrawSimple();
     voronoi.updateD();
+    voronoi.updateNeighbours();
   }
   image( voronoi.graphicsBuffer, 0, 0 );
   const mSite = voronoi.sites[voronoi.sites.length - 5];
@@ -58,6 +59,9 @@ export function draw() {
 export function mousePressed() {
   F.fadeIn( voronoi.sites[_.random( 0, 16, false )], 'weight', 180, 120 );
   console.log( 'fader created' );
+  console.log(
+    voronoi.getPath( voronoi.getCell( mouseX, mouseY ), voronoi.sites[12] )
+  );
 }
 function frCalc() {
   const id = frameCount % 10;
