@@ -3,8 +3,9 @@ import weightedVoronoi from 'd3-weighted-voronoi';
 import * as _ from 'lodash';
 import Fader from './classes/fader';
 import LCell from './classes/LCell';
+import Road from './classes/Road';
 import VM from './classes/VorManager';
-import { CellTypes } from './enums';
+import { CellTypes, RoadTypes } from './enums';
 import { insideBounds } from './helperFuncs';
 // import Offset from 'polygon-offset';
 import { getC } from './lib/pallete';
@@ -15,6 +16,7 @@ let c: p5.Renderer;
 let voronoi: VM;
 let F: Fader;
 let selectedCell: LCell;
+let randoPath: Road;
 export function setup() {
   c = createCanvas( 500, 500 );
 
@@ -25,8 +27,11 @@ export function setup() {
   pixelDensity( 1 );
   background( getC( 2, 5 ).hex );
   voronoi = new VM( width, height, 20 );
+  voronoi.updateD();
+  voronoi.updateNeighbours();
   voronoi.redrawSimple();
   F = new Fader();
+
 }
 export function draw() {
   background( 55, 255 );
@@ -48,12 +53,13 @@ export function draw() {
     F.fadeIn( mCell, 'opacity', 60, 255, 100 );
   }
   selectedCell = mCell;
-  if ( !( frameCount % 3 ) ) {
+  if ( !( frameCount % 1 ) ) {
     voronoi.redrawSimple();
     voronoi.updateD();
     voronoi.updateNeighbours();
   }
   image( voronoi.graphicsBuffer, 0, 0 );
+  if ( randoPath ) randoPath.draw();
   const mSite = voronoi.sites[voronoi.sites.length - 5];
   mSite.weight = 1;
   if ( insideBounds() ) {
@@ -78,12 +84,17 @@ export function draw() {
 }
 
 export function mousePressed() {
-  F.fadeIn( voronoi.sites[_.random( 0, 16, false )], 'weight', 180, 120 );
   console.log( 'fader created' );
   console.log(
     voronoi.getPath( voronoi.getCell( mouseX, mouseY ), voronoi.sites[12] )
   );
   console.log( insideBounds() );
+  randoPath = new Road(
+    voronoi,
+    voronoi.getCell( width / 2, 20 ),
+    voronoi.getCell( width / 2, height - 20 ),
+    RoadTypes.TWO_WAY
+  );
 }
 function frCalc() {
   const id = frameCount % 10;

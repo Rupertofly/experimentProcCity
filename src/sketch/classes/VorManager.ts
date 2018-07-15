@@ -64,7 +64,6 @@ export default class VorManager {
     return this.quadtree.find( x, y );
   }
   public getPath( start: LCell, end: LCell ) {
-    if ( !insideBounds() ) return;
     const heuristic = ( a: LCell, b: LCell ) => {
       return abs( a.x - b.x ) + abs( a.y - b.y );
     };
@@ -78,7 +77,8 @@ export default class VorManager {
       const current = frontier.dequeue().element;
       if ( current === end ) break;
       for ( const next of current.getNeighbours() ) {
-        const newCost = ( costSoFar[current.index] || 0 ) + 1;
+        const cost = current.type ? 0.1 : 1;
+        const newCost = ( costSoFar[current.index] || 0 ) + cost;
         if (
           costSoFar[next.index] === undefined ||
           newCost < costSoFar[next.index]

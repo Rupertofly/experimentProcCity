@@ -2,6 +2,7 @@
 /* tslint:disable prefer-for-of */
 import CCapture from 'ccapture.js';
 import { polygonCentroid, range } from 'd3';
+import { ColourObj } from './lib/pallete';
 if ( !Object.entries ) {
   Object.entries = obj => {
     const ownProps = Object.keys( obj );
@@ -153,4 +154,9 @@ export function insideBounds(
   y: number = mouseY
 ) {
   return x >= 0 ? ( x < width ? ( y >= 0 ? y < height : false ) : false ) : false;
+}
+export function toP5Col( col: ColourObj, alpha: number = 255 ) {
+  const c = color( col.hex );
+  c.setAlpha( alpha );
+  return c;
 }
