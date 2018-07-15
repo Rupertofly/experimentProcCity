@@ -1,7 +1,8 @@
 import { quadtree } from 'd3';
 import * as wv from 'd3-weighted-voronoi';
 import * as _ from 'lodash';
-import CellTypes from '../enums';
+import { CellTypes } from '../enums';
+import { insideBounds } from '../helperFuncs';
 import Queue from '../lib/priority-queue';
 import LCell from './LCell';
 export default class VorManager {
@@ -21,10 +22,12 @@ export default class VorManager {
     const dis = _.min( [width, height] );
     const v = dis / space;
     this.siteCount = _.floor( Math.pow( v, 2 ) );
-    this.sites = _.range( this.siteCount ).map( () => {
+    this.sites = _.range( this.siteCount ).map( i => {
       const x = _.random( dis, true );
       const y = _.random( dis, true );
-      return new LCell( x, y, CellTypes.BASIC );
+      const l = new LCell( x, y, CellTypes.BASIC );
+      l.index = i;
+      return l;
     } );
     this.vLayout = wv
       .weightedVoronoi<LCell>()
@@ -61,6 +64,7 @@ export default class VorManager {
     return this.quadtree.find( x, y );
   }
   public getPath( start: LCell, end: LCell ) {
+    if ( !insideBounds() ) return;
     const heuristic = ( a: LCell, b: LCell ) => {
       return abs( a.x - b.x ) + abs( a.y - b.y );
     };
@@ -86,7 +90,19 @@ export default class VorManager {
         }
       }
     }
-    return cameFrom;
+    const PathSites: LCell[] = [];
+    const recPathBuilder = (
+      index: number,
+      sourceObj: {},
+      destinationArray: LCell[]
+    ) => {
+      const thisObj: LCell = sourceObj[index];
+      if ( thisObj == null ) return;
+      destinationArray.push( thisObj );
+      recPathBuilder( thisObj.index, sourceObj, destinationArray );
+    };
+    recPathBuilder( end.index, cameFrom, PathSites );
+    return PathSites;
   }
 
   public updateNeighbours() {

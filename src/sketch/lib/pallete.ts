@@ -14,7 +14,7 @@ export interface ColourObj {
   green: number;
   hex: string;
 }
-enum hues {
+export enum hues {
   cools,
   warms,
   neutrals,
@@ -31,7 +31,7 @@ enum hues {
   apricots,
   reds
 }
-enum shades {
+export enum shades {
   black,
   dark,
   mediumDark,

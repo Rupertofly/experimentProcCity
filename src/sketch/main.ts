@@ -1,9 +1,11 @@
+import bs from 'b-spline';
 import weightedVoronoi from 'd3-weighted-voronoi';
 import * as _ from 'lodash';
 import Fader from './classes/fader';
 import LCell from './classes/LCell';
 import VM from './classes/VorManager';
-import CellTypes from './enums';
+import { CellTypes } from './enums';
+import { insideBounds } from './helperFuncs';
 // import Offset from 'polygon-offset';
 import { getC } from './lib/pallete';
 const frameR = [].fill( 0, 0, 4 );
@@ -54,6 +56,25 @@ export function draw() {
   image( voronoi.graphicsBuffer, 0, 0 );
   const mSite = voronoi.sites[voronoi.sites.length - 5];
   mSite.weight = 1;
+  if ( insideBounds() ) {
+    const lineToMouse = voronoi.getPath(
+      voronoi.sites[12],
+      voronoi.getCell( mouseX, mouseY )
+    );
+    let useableArray = lineToMouse.map( v => [v.x, v.y] as [number, number] );
+    useableArray = [...useableArray.slice( 0, 1 ), ...useableArray];
+    if ( useableArray[1] ) {
+      stroke( 155 );
+      strokeWeight( 3 );
+      noFill();
+      beginShape();
+      _.range( 0, 1, 0.01 ).map( t => {
+        const v = bs( t, 2, useableArray );
+        vertex( v[0], v[1] );
+      } );
+      endShape();
+    }
+  }
 }
 
 export function mousePressed() {
@@ -62,6 +83,7 @@ export function mousePressed() {
   console.log(
     voronoi.getPath( voronoi.getCell( mouseX, mouseY ), voronoi.sites[12] )
   );
+  console.log( insideBounds() );
 }
 function frCalc() {
   const id = frameCount % 10;

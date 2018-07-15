@@ -4,7 +4,7 @@ import { polygonCentroid } from 'd3-polygon';
 import { WVpoly } from 'd3-weighted-voronoi';
 import * as _ from 'lodash';
 import Offset from 'polygon-offset';
-import CellTypes from '../enums';
+import { CellTypes } from '../enums';
 import { toCol } from '../lib/helperFuncs';
 import { ColourObj, getC } from '../lib/pallete';
 import Fader from './fader';

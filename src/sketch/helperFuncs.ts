@@ -8,7 +8,7 @@ if ( !Object.entries ) {
     let i = ownProps.length;
     const resArray = new Array( i ); // preallocate the Array
     while ( i-- ) {
-      resArray[i] = [ ownProps[i], obj[ownProps[i]] ];
+      resArray[i] = [ownProps[i], obj[ownProps[i]]];
     }
     return resArray;
   };
@@ -57,30 +57,30 @@ export let lastFrame = 180;
  * Adds A frame to the recording and saves if at end
  *
  */
-export function recordFrame() {
-  if ( frameCount <= lastFrame ) {
-    recorder.capture( canvasObject );
-    if ( frameCount === lastFrame ) {
-      recorder.stop();
-      recorder.save();
-    }
-  }
-}
-/**
- * Set's up Recording
- *
- */
-export function recordSetup() {
-  recorder = new CCapture( {
-    format: 'webm',
-    framerate: 30,
-    verbose: true
-  } );
-  console.log( 'beginning record' );
+// export function recordFrame() {
+//   if ( frameCount <= lastFrame ) {
+//     recorder.capture( canvasObject );
+//     if ( frameCount === lastFrame ) {
+//       recorder.stop();
+//       recorder.save();
+//     }
+//   }
+// }
+// /**
+//  * Set's up Recording
+//  *
+//  */
+// export function recordSetup() {
+//   recorder = new CCapture( {
+//     format: 'webm',
+//     framerate: 30,
+//     verbose: true
+//   } );
+//   console.log( 'beginning record' );
 
-  canvasObject = document.getElementById( 'defaultCanvas0' );
-  recorder.start();
-}
+//   canvasObject = document.getElementById( 'defaultCanvas0' );
+//   recorder.start();
+// }
 function sqr( x ) {
   return x * x;
 }
@@ -94,7 +94,7 @@ function distToSegmentSquared( p, v, w ) {
   }
   let t = ( ( p.x - v[0] ) * ( w[0] - v[0] ) + ( p.y - v[1] ) * ( w[1] - v[1] ) ) / l2;
   t = Math.max( 0, Math.min( 1, t ) );
-  return dist2( p, [ v[0] + t * ( w[0] - v[0] ), v[1] + t * ( w[1] - v[1] ) ] );
+  return dist2( p, [v[0] + t * ( w[0] - v[0] ), v[1] + t * ( w[1] - v[1] )] );
 }
 /**
  * Returns Distance betweeen a point and a line
@@ -145,4 +145,12 @@ export function getRandomInt( min, max ) {
  */
 export function interp( value, inLow, inHigh, outLow, outHigh ) {
   return ( ( value - inLow ) / ( inHigh - inLow ) ) * ( outHigh - outLow ) + outLow;
+}
+export function insideBounds(
+  wid: number = width,
+  hei: number = height,
+  x: number = mouseX,
+  y: number = mouseY
+) {
+  return x >= 0 ? ( x < width ? ( y >= 0 ? y < height : false ) : false ) : false;
 }
